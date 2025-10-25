@@ -1,10 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, FlatList } from 'react-native';
 import { useState } from 'react';
- 
+
 export default function App() {
   const [contador, setContador] = useState(0);
   const [nombre, setNombre] = useState('');
+  const [listaNombres, setListaNombres] = useState([]);
 
   const longitud = nombre.length;
   const emoji =
@@ -13,6 +14,16 @@ export default function App() {
     longitud < 4 ? '😄😄😄' :
     '🤩🤩🤩🤩🤩';
 
+  const guardarnombre = () => {
+    if (nombre.trim()) {
+      setListaNombres([...listaNombres, nombre]);
+      setNombre('');
+    }
+  };
+  const eliminarUsuario = (index) => {
+    const nuevaLista = listaNombres.filter((_, i) => i !== index);
+    setListaNombres(nuevaLista);
+  }
   return ( 
     <View style={styles.container}>
       <Text>Haz hecho click: {contador}</Text>
@@ -22,15 +33,31 @@ export default function App() {
         style={styles.input}
         placeholder="Escribe tu nombre"
         value={nombre}
-        onChangeText={setNombre} //Atrapa el nombre escrito
+        onChangeText={setNombre}
       />
 
       <Text>Hola {nombre}</Text>
-
       <Text>Tu nombre tiene: {longitud} {emoji} caracteres</Text>
 
       <View style={styles.buttonWrapper}>
         <Button title="Borrar nombre" onPress={() => setNombre('')} />
+        <Button title="Guardar nombre" onPress={guardarnombre} />
+      </View>
+
+      <View style={styles.listaContainer}>
+        <Text style={styles.listaTitle}>Nombres guardados:</Text>
+        <FlatList
+          data={listaNombres}
+          renderItem={({item, index}) => (
+            <View>
+              <Text style={styles.listaItem}>{index + 1}. {item}</Text>
+              <Button title="Limpiar lista" onPress={() => eliminarUsuario(index)} />
+            </View>
+          )}
+          
+          keyExtractor={(_, index) => index.toString()}
+        />
+        
       </View>
     </View>
   );
@@ -56,5 +83,20 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     marginTop: 10,
     width: 200,
+  }
+  ,
+  listaContainer: {
+    marginTop: 20,
+    width: '80%',
+    maxHeight: 200,
+  },
+  listaTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  listaItem: {
+    padding: 5,
+    fontSize: 14,
   }
 });
