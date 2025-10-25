@@ -5,12 +5,19 @@ import { useState } from 'react';
 export default function App() {
   const [contador, setContador] = useState(0);
   const [nombre, setNombre] = useState('');
+
+  const longitud = nombre.length;
+  const emoji =
+    longitud === 0 ? '😶' :
+    longitud < 3 ? '🙂🙂' :
+    longitud < 4 ? '😄😄😄' :
+    '🤩🤩🤩🤩🤩';
+
   return ( 
     <View style={styles.container}>
       <Text>Haz hecho click: {contador}</Text>
       <Button title="Aumenta el contador" onPress={() => setContador(c => c + 1)} />
       <StatusBar style="auto" />
-
       <TextInput
         style={styles.input}
         placeholder="Escribe tu nombre"
@@ -18,7 +25,9 @@ export default function App() {
         onChangeText={setNombre} //Atrapa el nombre escrito
       />
 
-      <Text>{nombre}</Text>
+      <Text>Hola {nombre}</Text>
+
+      <Text>Tu nombre tiene: {longitud} {emoji} caracteres</Text>
 
       <View style={styles.buttonWrapper}>
         <Button title="Borrar nombre" onPress={() => setNombre('')} />
